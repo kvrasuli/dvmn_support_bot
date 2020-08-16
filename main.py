@@ -2,6 +2,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from dotenv import load_dotenv
 import os
 import logging
+import dialogflow_v2 as dialogflow
 
 
 logging.basicConfig(level=logging.INFO)
@@ -14,6 +15,11 @@ def start(update, context):
 
 def echo(update, context):
     update.message.reply_text(update.message.text)
+    
+
+def answer(update, context):
+    answer = detect_intent_texts('dvmnsupportbot-286611', '324357215', update.message.text, 'ru')
+    update.message.reply_text(answer)
 
 
 def error(update, context):
@@ -25,7 +31,7 @@ def run_bot(token):
 
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(MessageHandler(Filters.text, echo))
+    dp.add_handler(MessageHandler(Filters.text, answer))
     dp.add_error_handler(error)
 
     updater.start_polling()
@@ -38,6 +44,16 @@ def main():
     run_bot(telegram_token)
 
 
+def detect_intent_texts(project_id, session_id, text, language_code):
+    session_client = dialogflow.SessionsClient()
+    session = session_client.session_path(project_id, session_id)
+    text_input = dialogflow.types.TextInput(
+        text=text, language_code=language_code
+    )
+    query_input = dialogflow.types.QueryInput(text=text_input)
+    response = session_client.detect_intent(session=session, query_input=query_input)
+    return response.query_result.fulfillment_text
+
+
 if __name__ == "__main__":
     main()
-
