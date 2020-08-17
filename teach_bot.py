@@ -42,8 +42,11 @@ def teach_bot():
     load_dotenv()
     google_project_id = os.getenv('GOOGLE_PROJECT_ID')
     intents = repack_intents('questions.json')
+    print('Intents repacked')
     load_intents_to_agent(intents, google_project_id)
+    print('Intents loaded to agent')
     teach_agent(google_project_id)
+    print('Agent taught')
 
 
 if __name__ == "__main__":
