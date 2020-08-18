@@ -13,9 +13,11 @@ def answer(event, vk_api, project_id):
         event.text,
         'ru'
     )
+    if answer.intent.is_fallback:
+        return
     vk_api.messages.send(
         user_id=event.user_id,
-        message=answer,
+        message=answer.fulfillment_text,
         random_id=random.randint(1, 1000)
     )
 

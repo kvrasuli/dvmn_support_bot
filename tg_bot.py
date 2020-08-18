@@ -21,7 +21,7 @@ def answer(update, context, project_id):
         update.message.text,
         'ru'
     )
-    update.message.reply_text(answer)
+    update.message.reply_text(answer.fulfillment_text)
 
 
 def error(update, context):
@@ -52,7 +52,7 @@ def detect_intent_text(project_id, session_id, text, language_code):
         session=session,
         query_input=query_input
     )
-    return response.query_result.fulfillment_text
+    return response.query_result
 
 
 def main():
