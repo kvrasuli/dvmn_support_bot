@@ -4,10 +4,22 @@ from functools import partial
 import os
 import logging
 import dialogflow_v2 as dialogflow
+import telegram
 
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('tg_logger')
+
+
+class TelegramLogsHandler(logging.Handler):
+    def __init__(self, token, chat_id):
+        super().__init__()
+        self.token = token
+        self.bot = telegram.Bot(token=self.token)
+        self.chat_id = chat_id
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
 def start(update, context):
@@ -24,18 +36,18 @@ def answer(update, context, project_id):
     update.message.reply_text(answer.fulfillment_text)
 
 
-def error(update, context):
+def error(update, context, logger):
     logger.warning(f'Update {update} caused error {context.error}')
 
 
-def run_bot(token, project_id):
+def run_bot(token, project_id, logger):
     updater = Updater(token, use_context=True)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(
         MessageHandler(Filters.text, partial(answer, project_id=project_id))
     )
-    dp.add_error_handler(error)
+    dp.add_error_handler(partial(error, logger=logger))
     updater.start_polling()
     updater.idle()
 
@@ -58,7 +70,13 @@ def detect_intent_text(project_id, session_id, text, language_code):
 def main():
     load_dotenv()
     telegram_token = os.getenv('TELEGRAM_TOKEN')
+    tg_logger_token = os.getenv('TG_LOGGER_TOKEN')
+    tg_chat_id_logger = os.getenv('TG_CHAT_ID_LOGGER')
     google_project_id = os.getenv('GOOGLE_PROJECT_ID')
+
+    logger.basicConfig(level=logging.INFO)
+    logger.addHandler(TelegramLogsHandler(tg_logger_token, tg_chat_id_logger))
+
     run_bot(telegram_token, google_project_id)
 
 
