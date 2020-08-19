@@ -5,6 +5,7 @@ import os
 import logging
 import dialogflow_v2 as dialogflow
 import telegram
+import google
 
 
 logger = logging.getLogger('tg_logger')
@@ -27,17 +28,20 @@ def start(update, context):
 
 
 def answer(update, context, project_id):
-    answer = detect_intent_text(
-        project_id,
-        update.effective_chat.id,
-        update.message.text,
-        'ru'
-    )
+    try:
+        answer = detect_intent_text(
+            project_id,
+            update.effective_chat.id,
+            update.message.text,
+            'ru'
+        )
+    except google.api_core.exceptions.GoogleAPIError:
+        logger.error(f'{__file__} Google API error')
     update.message.reply_text(answer.fulfillment_text)
 
 
 def error(update, context, logger):
-    logger.warning(f'Update {update} caused error {context.error}')
+    logger.error(f'{__file__} Update {update} caused error {context.error}')
 
 
 def run_bot(token, project_id, logger):
