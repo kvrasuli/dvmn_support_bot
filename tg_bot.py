@@ -78,10 +78,10 @@ def main():
     tg_chat_id_logger = os.getenv('TG_CHAT_ID_LOGGER')
     google_project_id = os.getenv('GOOGLE_PROJECT_ID')
 
-    logger.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO)
     logger.addHandler(TelegramLogsHandler(tg_logger_token, tg_chat_id_logger))
 
-    run_bot(telegram_token, google_project_id)
+    run_bot(telegram_token, google_project_id, logger)
 
 
 if __name__ == "__main__":

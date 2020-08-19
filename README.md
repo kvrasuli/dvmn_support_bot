@@ -12,6 +12,11 @@ GOOGLE_APPLICATION_CREDENTIALS='path to your google cloud json key'
 GOOGLE_PROJECT_ID='your google cloud project id'
 VK_GROUP_TOKEN='your vk group token'
 ```
+Add 2 additional env variables for logging:
+```
+TG_CHAT_ID_LOGGER='your tg chat id'
+TG_LOGGER_TOKEN='your tg logger bot'
+```
 To teach dialogflow agent run teach_bot.py with
 ```
 python3 teach_bot.py
@@ -32,6 +37,9 @@ python3 vk_bot.py
 
 Procfile for heroku deploying is created. Use this guide to deploy:
 https://devcenter.heroku.com/articles/github-integration
+
+Add this addition buildpack in settings:
+https://github.com/gerywahyunugraha/heroku-google-application-credentials-buildpack
 
 ### How to install dependencies
 
