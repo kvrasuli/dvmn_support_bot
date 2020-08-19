@@ -3,6 +3,10 @@ from dotenv import load_dotenv
 import os
 import json
 import copy
+import logging
+from tg_bot import TelegramLogsHandler
+import google
+import sys
 
 
 def repack_intents(filename):
@@ -38,16 +42,33 @@ def teach_agent(project_id):
     client.train_agent(parent)
 
 
-def teach_bot():
-    load_dotenv()
-    google_project_id = os.getenv('GOOGLE_PROJECT_ID')
+def teach_bot(google_project_id, logger):
     intents = repack_intents('questions.json')
-    print('Intents repacked')
-    load_intents_to_agent(intents, google_project_id)
-    print('Intents loaded to agent')
-    teach_agent(google_project_id)
-    print('Agent taught')
+    logger.info('Intents repacked')
+    try:
+        load_intents_to_agent(intents, google_project_id)
+    except google.api_core.exceptions.InvalidArgument:
+        logger.error(f'{__file__} Loading intents error')
+        sys.exit()
+    logger.info('Intents loaded to agent')
+    try:
+        teach_agent(google_project_id)
+    except google.api_core.exceptions.GoogleAPIError:
+        logger.error(f'{__file__} Teaching agent error')
+        sys.exit()
+    logger.info('Agent taught')
+
+
+def main():
+    load_dotenv()
+    tg_logger_token = os.getenv('TG_LOGGER_TOKEN')
+    tg_chat_id_logger = os.getenv('TG_CHAT_ID_LOGGER')
+    google_project_id = os.getenv('GOOGLE_PROJECT_ID')
+    logger = logging.getLogger('tg_logger')
+    logging.basicConfig(level=logging.INFO)
+    logger.addHandler(TelegramLogsHandler(tg_logger_token, tg_chat_id_logger))
+    teach_bot(google_project_id, logger)
 
 
 if __name__ == "__main__":
-    teach_bot()
+    main()
