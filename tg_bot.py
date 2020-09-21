@@ -40,7 +40,7 @@ def answer(update, context, project_id):
     update.message.reply_text(answer.fulfillment_text)
 
 
-def error(update, context, logger):
+def log_error(update, context, logger):
     logger.error(f'{__file__} Update {update} caused error {context.error}')
 
 
@@ -51,7 +51,7 @@ def run_bot(token, project_id, logger):
     dp.add_handler(
         MessageHandler(Filters.text, partial(answer, project_id=project_id))
     )
-    dp.add_error_handler(partial(error, logger=logger))
+    dp.add_error_handler(partial(log_error, logger=logger))
     updater.start_polling()
     updater.idle()
 
