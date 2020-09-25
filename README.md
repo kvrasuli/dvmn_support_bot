@@ -4,7 +4,7 @@ This is a telegram and vk support bots using Google dialogflow.
 
 ### How to use
 
-You'll need you own Telegram bot token, VK group token, json file with your google API key and your google cloud project id.
+You'll need your own Telegram bot token, VK group token, json file with your google API key and your google cloud project id.
 Create 4 corresponding environment variables:
 ```
 TELEGRAM_TOKEN='your support bot token'
@@ -14,7 +14,7 @@ VK_GROUP_TOKEN='your vk group token'
 ```
 Add 2 additional env variables for logging:
 ```
-TG_CHAT_ID_LOGGER='your tg chat id'
+TG_LOGGER_CHAT_ID='your tg chat id'
 TG_LOGGER_TOKEN='your tg logger bot'
 ```
 To teach dialogflow agent run teach_bot.py with

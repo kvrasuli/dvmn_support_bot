@@ -75,11 +75,11 @@ def main():
     load_dotenv()
     telegram_token = os.getenv('TELEGRAM_TOKEN')
     tg_logger_token = os.getenv('TG_LOGGER_TOKEN')
-    tg_chat_id_logger = os.getenv('TG_CHAT_ID_LOGGER')
+    tg_logger_chat_id = os.getenv('TG_LOGGER_CHAT_ID')
     google_project_id = os.getenv('GOOGLE_PROJECT_ID')
 
     logging.basicConfig(level=logging.INFO)
-    logger.addHandler(TelegramLogsHandler(tg_logger_token, tg_chat_id_logger))
+    logger.addHandler(TelegramLogsHandler(tg_logger_token, tg_logger_chat_id))
 
     run_bot(telegram_token, google_project_id, logger)
 
