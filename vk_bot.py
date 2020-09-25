@@ -8,6 +8,9 @@ from tg_bot import detect_intent_text, TelegramLogsHandler
 import google
 
 
+logger = logging.getLogger('tg_logger')
+
+
 def answer(event, vk_api, project_id, logger):
     try:
         answer = detect_intent_text(
@@ -48,7 +51,6 @@ if __name__ == "__main__":
     tg_logger_token = os.getenv('TG_LOGGER_TOKEN')
     tg_chat_id_logger = os.getenv('TG_CHAT_ID_LOGGER')
 
-    logger = logging.getLogger('tg_logger')
     logging.basicConfig(level=logging.INFO)
     logger.addHandler(TelegramLogsHandler(tg_logger_token, tg_chat_id_logger))
 

@@ -9,6 +9,9 @@ import google
 import sys
 
 
+logger = logging.getLogger('tg_logger')
+
+
 def repack_intents(filename):
     with open(filename, 'r', encoding='utf8') as q:
         questions = json.load(q)
@@ -56,7 +59,6 @@ def main():
     tg_logger_token = os.getenv('TG_LOGGER_TOKEN')
     tg_chat_id_logger = os.getenv('TG_CHAT_ID_LOGGER')
     google_project_id = os.getenv('GOOGLE_PROJECT_ID')
-    logger = logging.getLogger('tg_logger')
     logging.basicConfig(level=logging.INFO)
     logger.addHandler(TelegramLogsHandler(tg_logger_token, tg_chat_id_logger))
     try:
