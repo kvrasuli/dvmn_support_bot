@@ -31,7 +31,7 @@ def answer(update, context, project_id):
     try:
         answer = detect_intent_text(
             project_id,
-            update.effective_chat.id,
+            f'tg-{update.effective_chat.id}',
             update.message.text,
             'ru'
         )

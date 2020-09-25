@@ -12,7 +12,7 @@ def answer(event, vk_api, project_id, logger):
     try:
         answer = detect_intent_text(
             project_id,
-            event.user_id,
+            f'vk-{event.user_id}',
             event.text,
             'ru'
         )
