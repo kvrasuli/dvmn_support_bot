@@ -45,17 +45,9 @@ def teach_agent(project_id):
 def teach_bot(google_project_id, logger):
     intents = repack_intents('questions.json')
     logger.info('Intents repacked')
-    try:
-        load_intents_to_agent(intents, google_project_id)
-    except google.api_core.exceptions.InvalidArgument:
-        logger.error(f'{__file__} Loading intents error')
-        sys.exit()
+    load_intents_to_agent(intents, google_project_id)
     logger.info('Intents loaded to agent')
-    try:
-        teach_agent(google_project_id)
-    except google.api_core.exceptions.GoogleAPIError:
-        logger.error(f'{__file__} Teaching agent error')
-        sys.exit()
+    teach_agent(google_project_id)
     logger.info('Agent taught')
 
 
@@ -67,7 +59,14 @@ def main():
     logger = logging.getLogger('tg_logger')
     logging.basicConfig(level=logging.INFO)
     logger.addHandler(TelegramLogsHandler(tg_logger_token, tg_chat_id_logger))
-    teach_bot(google_project_id, logger)
+    try:
+        teach_bot(google_project_id, logger)
+    except google.api_core.exceptions.InvalidArgument:
+        logger.error(f'{__file__} Loading intents error')
+        sys.exit()
+    except google.api_core.exceptions.GoogleAPIError:
+        logger.error(f'{__file__} Teaching agent error')
+        sys.exit()
 
 
 if __name__ == "__main__":
